@@ -1,95 +1,40 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import Header from './src/components/Header';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import {options} from './src/constants/options';
+import Timer from './src/components/Timer';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const [isRunning, setIsRunning] = useState(false);
+  const [time, setTime] = useState(25 * 60);
+  const [status, setStatus] = useState(options[0].id);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: options[status - 1].color}]}>
+      <StatusBar />
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View>
+          <Text style={styles.text}>Pomodoro</Text>
+          <Header status={status} setStatus={setStatus} setTime={setTime} />
+          <Timer time={time} />
+          <TouchableOpacity
+            onPress={() => setIsRunning(!isRunning)}
+            style={styles.button}>
+            <Text style={[styles.textWhite, styles.textCenter]}>
+              {isRunning ? 'STOP' : 'START'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -97,21 +42,30 @@ function App(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  text: {
+    fontSize: 32,
+    fontWeight: 'bold',
   },
-  sectionDescription: {
-    marginTop: 8,
+  button: {
+    padding: 10,
     fontSize: 18,
-    fontWeight: '400',
+    height: 44,
+    borderWidth: 2,
+    borderRadius: 8,
+    marginVertical: 10,
+    borderColor: 'transparent',
+    backgroundColor: '#333',
   },
-  highlight: {
-    fontWeight: '700',
+  textWhite: {
+    color: 'white',
+  },
+  textCenter: {
+    textAlign: 'center',
   },
 });
 
